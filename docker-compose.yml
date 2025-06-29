@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:13-alpine # Using a specific version like 13-alpine is good practice
+    container_name: library_postgres_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB:-library_db}
+      - POSTGRES_USER=${POSTGRES_USER:-library_user}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-library_password}
+    ports:
+      - "${POSTGRES_PORT_HOST:-5433}:5432" # Expose PostgreSQL on host port 5433 by default
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-library_user} -d ${POSTGRES_DB:-library_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build: .
+    container_name: library_django_web
+    command: >
+      sh -c "python manage.py makemigrations --noinput &&
+             python manage.py migrate --noinput &&
+             python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/app # Mount current directory to /app in container for live code changes
+    ports:
+      - "${DJANGO_PORT_HOST:-8000}:8000"
+    environment:
+      - SECRET_KEY=${DJANGO_SECRET_KEY:-your_development_secret_key_here_change_me}
+      - DEBUG=${DJANGO_DEBUG:-True}
+      - POSTGRES_DB=${POSTGRES_DB:-library_db}
+      - POSTGRES_USER=${POSTGRES_USER:-library_user}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-library_password}
+      - POSTGRES_HOST=db # This should match the service name of the database
+      - POSTGRES_PORT=5432 # Port inside the docker network
+      # Add other environment variables as needed
+    depends_on:
+      db:
+        condition: service_healthy # Wait for db to be healthy before starting web
+    # restart: unless-stopped # Optional: configure restart policy
+
+volumes:
+  postgres_data: # Defines the named volume for data persistence
