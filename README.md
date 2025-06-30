@@ -70,6 +70,11 @@ Once the containers are up and running (you can check status with `docker-compos
 
 *   **Web Application (Admin Panel):**
     *   Access the Django Admin interface at: `http://localhost:8000/admin/` (or `http://localhost:<your_DJANGO_PORT_HOST>/admin/` if you changed `DJANGO_PORT_HOST` in `.env`).
+    *   *(Optional: Add a screenshot of the admin login page here)*
+        `![Admin Login Page](assets/images/admin_login_example.png)`
+    *   *(Optional: Add a screenshot of the admin dashboard or a model list page here)*
+        `![Admin Dashboard Example](assets/images/admin_dashboard_example.png)`
+
 *   **Creating a Superuser:**
     *   To access the admin panel, you'll need a superuser account. Create one by running:
         ```bash
@@ -81,6 +86,8 @@ Once the containers are up and running (you can check status with `docker-compos
 
 *   **API Base URL:** `http://localhost:8000/api/` (or replace `8000` with your `DJANGO_PORT_HOST`)
 *   **Swagger UI (Interactive API Documentation):** `http://localhost:8000/swagger/`
+    *   *(Optional: Add a screenshot of the Swagger UI page here)*
+        `![Swagger UI Example](assets/images/swagger_ui_example.png)`
 *   **ReDoc (Alternative API Documentation):** `http://localhost:8000/redoc/`
 
 *   **Authentication:**
@@ -143,6 +150,9 @@ Once the containers are up and running (you can check status with `docker-compos
 *   `requirements.txt`: A list of Python package dependencies for the project.
 *   `.env.example`: An example file showing the required environment variables. You should copy this to `.env` and fill in your actual values.
 *   `manage.py`: Django's command-line utility for various tasks like running the server, creating migrations, etc.
+*   `assets/images/`: Directory for storing static images and screenshots.
+    *   `.gitkeep`: Placeholder file to ensure the directory is tracked by Git.
+    *   *(You should replace `admin_login_example.png`, `admin_dashboard_example.png`, `swagger_ui_example.png` with actual screenshots after running the application.)*
 *   `README.md`: This file.
 
 ---
