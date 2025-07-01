@@ -21,12 +21,21 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-xvdbn#h@9f1nomwny#eyg!+k^tm1ch8os^e0vn6j*joa^yk2vo"
+# Default secret key is for development only.
+# Ensure DJANGO_SECRET_KEY is set in your environment (.env file) for production.
+SECRET_KEY = os.environ.get(
+    "DJANGO_SECRET_KEY",
+    "django-insecure-xvdbn#h@9f1nomwny#eyg!+k^tm1ch8os^e0vn6j*joa^yk2vo_ensure_this_is_changed"
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG will be True if DJANGO_DEBUG in .env is 'True', otherwise False.
+DEBUG = os.environ.get("DJANGO_DEBUG", "True") == "True"
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS_STRING = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost 127.0.0.1")
+ALLOWED_HOSTS = ALLOWED_HOSTS_STRING.split(" ") if ALLOWED_HOSTS_STRING else []
+if DEBUG and not ALLOWED_HOSTS: # Add common dev hosts if DEBUG and no explicit ALLOWED_HOSTS
+    ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 
 # Application definition
@@ -85,7 +94,7 @@ DATABASES = {
         "NAME": os.environ.get("POSTGRES_DB", "library_db"),
         "USER": os.environ.get("POSTGRES_USER", "library_user"),
         "PASSWORD": os.environ.get("POSTGRES_PASSWORD", "library_password"),
-        "HOST": os.environ.get("POSTGRES_HOST", "db"),
+        "HOST": os.environ.get("POSTGRES_HOST", "localhost"), # Changed default to 'localhost'
         "PORT": os.environ.get("POSTGRES_PORT", "5432"),
     }
 }
